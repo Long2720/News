@@ -1,17 +1,40 @@
--- Author: [Sech]
--- Script version: 1.0
--- Description: My Custom Script
+-- Hiển thị thông tin Description đầu tiên
+print([[
+=======================================
+==          DESCRIPTION:            ==
+==       READ THIS LINE IS A GAY    ==
+=======================================
+]])
 
+-- Tạo độ trễ 5 giây trước khi in Author và Version
+wait(5)
+
+-- Hiển thị thông tin Author và Version
+print([[
+=======================================
+==       AUTHOR: [Long]              ==
+==       VERSION: CLOSE BETA         ==
+=======================================
+]])
+
+-- Tạo độ trễ 5 giây trước khi chạy các phần còn lại
+wait(5)
+
+
+-- Khởi tạo notify và lib
 local notify = loadstring(game:HttpGet("https://raw.githubusercontent.com/Long2720/NeuVI/refs/heads/main/NotifiTest"))()
 
 local lib = loadstring(game:HttpGet(''))();
 
+-- Tạo cửa sổ menu
 local win = lib.new('My Custom Script');
 
+-- Tạo nút "Open URL"
 win.AddButton('Open URL',function()
     (setclipboard or toclipboard)('https://example.com');
 end);
 
+-- Tạo nút "Discord"
 win.AddButton('Discord',function()
     (setclipboard or toclipboard)('https://discord.gg/kncrypthub');
 
