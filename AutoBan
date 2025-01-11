@@ -1,0 +1,122 @@
+-- Auto Farm Script for Block Fruits with Quest and Boss Farming
+
+-- Define the target NPC or enemies to farm
+local targetEnemy = "Bandit" -- Replace with the enemy you want to farm
+
+-- Define the level thresholds for changing quests and maps
+local levelThresholds = {
+    [1] = "Starter Island",
+    [50] = "Jungle Island",
+    [150] = "Pirate Island",
+    [300] = "Sky Island",
+    -- Add more levels and maps as needed
+}
+
+-- Define the quest and boss info
+local quests = {
+    [1] = { questGiver = "Quest Giver 1", questName = "Quest 1", levelRequired = 1 },
+    [2] = { questGiver = "Quest Giver 2", questName = "Quest 2", levelRequired = 50 },
+    -- Add more quests as needed
+}
+
+-- Wait for the game to load
+while not game:IsLoaded() do
+    wait(1)
+end
+
+-- Function to find the enemy
+local function findEnemy()
+    for _, enemy in pairs(workspace:GetChildren()) do
+        if enemy:FindFirstChild("Humanoid") and enemy.Name == targetEnemy then
+            return enemy
+        end
+    end
+    return nil
+end
+
+-- Function to find the boss
+local function findBoss()
+    for _, enemy in pairs(workspace:GetChildren()) do
+        if enemy:FindFirstChild("Humanoid") and enemy.Name == "Boss" then  -- Adjust with your boss's name
+            return enemy
+        end
+    end
+    return nil
+end
+
+-- Function to get player level
+local function getPlayerLevel()
+    local player = game.Players.LocalPlayer
+    -- Adjust this part to get level from the correct location in the game
+    local levelStat = player:WaitForChild("PlayerStats"):WaitForChild("Level") 
+    return levelStat.Value
+end
+
+-- Function to teleport to the next map based on level
+local function teleportToNextMap()
+    local currentLevel = getPlayerLevel()
+    
+    for level, mapName in pairs(levelThresholds) do
+        if currentLevel >= level then
+            -- Assuming there's a teleportation function or button
+            local mapButton = game:GetService("ReplicatedStorage"):WaitForChild("Teleports"):WaitForChild(mapName)
+            if mapButton then
+                mapButton:FireServer() -- Simulate teleport
+                print("Teleported to " .. mapName)
+                return
+            end
+        end
+    end
+end
+
+-- Function to accept and do quests
+local function acceptQuestAndFarm(quest)
+    local questGiver = workspace:FindFirstChild(quest.questGiver)
+    if questGiver then
+        -- Accept quest (replace this with actual quest accepting code)
+        questGiver:Click() -- Simulate clicking to start quest
+        print("Quest Accepted: " .. quest.questName)
+
+        -- Farm for quest objectives (you can adjust depending on the quest)
+        while getPlayerLevel() < quest.levelRequired do
+            local enemy = findEnemy()
+            if enemy then
+                -- Attack and farm enemy
+                local character = game.Players.LocalPlayer.Character
+                if character and character:FindFirstChild("HumanoidRootPart") then
+                    character.HumanoidRootPart.CFrame = enemy.HumanoidRootPart.CFrame + Vector3.new(0, 0, 5)
+                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("UseSkill", 1)
+                    wait(1)
+                end
+            end
+            wait(0.5) -- Adjust farming speed
+        end
+        print("Quest Completed: " .. quest.questName)
+    end
+end
+
+-- Main loop
+while true do
+    -- Check if there is a boss to farm
+    local boss = findBoss()
+    
+    if boss then
+        print("Boss Found! Farming boss...")
+        local character = game.Players.LocalPlayer.Character
+        if character and character:FindFirstChild("HumanoidRootPart") then
+            -- Move to the boss and attack
+            character.HumanoidRootPart.CFrame = boss.HumanoidRootPart.CFrame + Vector3.new(0, 0, 5)
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("UseSkill", 1)
+            wait(2) -- Adjust delay for boss farm
+        end
+    else
+        -- No boss found, accept the next quest and farm enemies
+        for _, quest in pairs(quests) do
+            if getPlayerLevel() >= quest.levelRequired then
+                acceptQuestAndFarm(quest)
+                teleportToNextMap() -- Teleport if necessary
+            end
+        end
+    end
+    wait(1)
+end
