@@ -26,8 +26,20 @@ local notify = loadstring(game:HttpGet("https://raw.githubusercontent.com/Long27
 
 local lib = loadstring(game:HttpGet('https://raw.githubusercontent.com/Long2720/News/refs/heads/main/AutoBan'))();
 
+-- ID hình ảnh từ Roblox (104321434995186)
+local logoImageID = "rbxassetid://<104321434995186>"
+
 -- Tạo cửa sổ menu
 local win = lib.new('My Custom Script');
+
+-- Tạo logo bật/tắt menu (Sử dụng ImageButton)
+local toggleButton = win.AddImageButton(logoImageID, function()
+    if win.Visible then
+        win.Visible = false  -- Ẩn menu
+    else
+        win.Visible = true   -- Hiển thị menu
+    end
+end)
 
 -- Tạo nút "Open URL"
 win.AddButton('Open URL',function()
