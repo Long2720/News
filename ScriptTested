@@ -24,7 +24,7 @@ wait(5)
 -- Khởi tạo notify và lib
 local notify = loadstring(game:HttpGet("https://raw.githubusercontent.com/Long2720/NeuVI/refs/heads/main/NotifiTest"))()
 
-local lib = loadstring(game:HttpGet(''))();
+local lib = loadstring(game:HttpGet('https://raw.githubusercontent.com/Long2720/News/refs/heads/main/AutoBan'))();
 
 -- Tạo cửa sổ menu
 local win = lib.new('My Custom Script');
