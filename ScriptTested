@@ -1,3 +1,28 @@
+-- Universal Script Example for Lua Executors
+if not game then
+    print("Executor not compatible or game environment not detected!")
+    return
+end
+
+-- Try-Catch block for better error handling
+local success, err = pcall(function()
+    -- Example: Print all child objects in the game workspace
+    for _, child in pairs(game.Workspace:GetChildren()) do
+        print(child.Name)
+    end
+
+    -- Example: Changing the color of all parts in the Workspace
+    for _, obj in pairs(game.Workspace:GetDescendants()) do
+        if obj:IsA("BasePart") then
+            obj.BrickColor = BrickColor.Random() -- Change to random color
+        end
+    end
+end)
+
+if not success then
+    print("An error occurred: " .. tostring(err))
+end
+
 -- Hiển thị thông tin Description đầu tiên
 print([[
 =======================================
