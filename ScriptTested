@@ -1,0 +1,33 @@
+-- Author: [Sech]
+-- Script version: 1.0
+-- Description: My Custom Script
+
+local notify = loadstring(game:HttpGet("https://raw.githubusercontent.com/Long2720/NeuVI/refs/heads/main/NotifiTest"))()
+
+local lib = loadstring(game:HttpGet(''))();
+
+local win = lib.new('My Custom Script');
+
+win.AddButton('Open URL',function()
+    (setclipboard or toclipboard)('https://example.com');
+end);
+
+win.AddButton('Discord',function()
+    (setclipboard or toclipboard)('https://discord.gg/kncrypthub');
+
+    if request then
+        request({
+            Url = 'http://127.0.0.1:6463/rpc?v=1',
+            Method = 'POST',
+            Headers = {
+                ['Content-Type'] = 'application/json',
+                Origin = 'https://discord.com'
+            },
+            Body = game:GetService('HttpService'):JSONEncode({
+                cmd = 'INVITE_BROWSER',
+                nonce = game:GetService('HttpService'):GenerateGUID(false),
+                args = {code = 'wPaQZwhMHy'}
+            })
+        })
+    end
+end);
