@@ -1,0 +1,114 @@
+-- Biến kiểm soát
+local autoFarmEnabled = false -- Bật/tắt Auto Farm
+local seaFarm = "Sea 1" -- Vùng farm mặc định
+
+-- Tạo GUI
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+local ToggleButton = Instance.new("TextButton")
+local SeaSelector = Instance.new("TextButton")
+
+-- Cài đặt GUI
+ScreenGui.Parent = game.CoreGui
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+MainFrame.Size = UDim2.new(0, 300, 0, 400)
+MainFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
+
+Title.Parent = MainFrame
+Title.Text = "Auto Farm Menu"
+Title.Size = UDim2.new(1, 0, 0.2, 0)
+Title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 24
+
+-- Nút bật/tắt Auto Farm
+ToggleButton.Parent = MainFrame
+ToggleButton.Text = "Auto Farm: OFF"
+ToggleButton.Size = UDim2.new(0.8, 0, 0.2, 0)
+ToggleButton.Position = UDim2.new(0.1, 0, 0.3, 0)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(100, 0, 0)
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.Font = Enum.Font.SourceSansBold
+ToggleButton.TextSize = 20
+
+-- Menu chọn vùng (Sea 1, 2, 3)
+SeaSelector.Parent = MainFrame
+SeaSelector.Text = "Farm Zone: Sea 1"
+SeaSelector.Size = UDim2.new(0.8, 0, 0.2, 0)
+SeaSelector.Position = UDim2.new(0.1, 0, 0.6, 0)
+SeaSelector.BackgroundColor3 = Color3.fromRGB(0, 100, 100)
+SeaSelector.TextColor3 = Color3.fromRGB(255, 255, 255)
+SeaSelector.Font = Enum.Font.SourceSansBold
+SeaSelector.TextSize = 20
+
+-- Chức năng Toggle Auto Farm
+ToggleButton.MouseButton1Click:Connect(function()
+    autoFarmEnabled = not autoFarmEnabled
+    if autoFarmEnabled then
+        ToggleButton.Text = "Auto Farm: ON"
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 100, 0)
+    else
+        ToggleButton.Text = "Auto Farm: OFF"
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(100, 0, 0)
+    end
+end)
+
+-- Chức năng chọn vùng farm
+SeaSelector.MouseButton1Click:Connect(function()
+    if seaFarm == "Sea 1" then
+        seaFarm = "Sea 2"
+        SeaSelector.Text = "Farm Zone: Sea 2"
+    elseif seaFarm == "Sea 2" then
+        seaFarm = "Sea 3"
+        SeaSelector.Text = "Farm Zone: Sea 3"
+    else
+        seaFarm = "Sea 1"
+        SeaSelector.Text = "Farm Zone: Sea 1"
+    end
+end)
+
+-- Chức năng Auto Farm
+local function autoFarm()
+    while wait(1) do
+        if autoFarmEnabled then
+            local player = game.Players.LocalPlayer
+            local level = player.Data.Level.Value -- Cấp độ người chơi
+            local location = nil
+
+            if seaFarm == "Sea 1" then
+                location = CFrame.new(123, 45, 678) -- Tọa độ Sea 1
+            elseif seaFarm == "Sea 2" then
+                location = CFrame.new(456, 78, 910) -- Tọa độ Sea 2
+            elseif seaFarm == "Sea 3" then
+                location = CFrame.new(789, 12, 345) -- Tọa độ Sea 3
+            end
+
+            -- Dịch chuyển và tấn công quái
+            if location then
+                local character = player.Character or player.CharacterAdded:Wait()
+                local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+                humanoidRootPart.CFrame = location
+
+                local tool = player.Backpack:FindFirstChildOfClass("Tool")
+                if tool then
+                    player.Character.Humanoid:EquipTool(tool)
+                    local target = game.Workspace.Enemies:FindFirstChildOfClass("Model")
+                    if target then
+                        local targetRoot = target:FindFirstChild("HumanoidRootPart")
+                        if targetRoot then
+                            humanoidRootPart.CFrame = targetRoot.CFrame
+                            wait(0.5)
+                            tool:Activate()
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+-- Chạy Auto Farm
+spawn(autoFarm)
